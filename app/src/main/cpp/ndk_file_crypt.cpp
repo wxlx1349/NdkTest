@@ -6,8 +6,8 @@ char password[] = "mynameisjason888";
 //加密
 JNIEXPORT void JNICALL Java_com_example_wangxi_ndktest_Cryptor_crypt
         (JNIEnv *env, jclass jcls, jstring normal_path_jstr, jstring crypt_path_jstr) {
-    const char *normal_path = env->GetStringUTFChars(normal_path_jstr, NULL);
-    const char *crypt_path = env->GetStringUTFChars(crypt_path_jstr, NULL);
+    const char *normal_path = env->GetStringUTFChars(normal_path_jstr, JNI_FALSE);
+    const char *crypt_path = env->GetStringUTFChars(crypt_path_jstr, JNI_FALSE);
 
     //打开文件
     FILE *normal_fp = fopen(normal_path, "rb");
@@ -16,7 +16,7 @@ JNIEXPORT void JNICALL Java_com_example_wangxi_ndktest_Cryptor_crypt
     int ch;
     int i = 0;  //循环使用密码中的字母进行异或运算
     int pwd_len = strlen(password);
-    while (ch = fgetc(normal_fp) != EOF) {//End of File
+    while ((ch = fgetc(normal_fp)) != EOF) {//End of File
         //写入（异或运算）
         fputc(ch ^ password[i % pwd_len], crypt_fp);
         i++;
@@ -37,7 +37,7 @@ JNIEXPORT void JNICALL Java_com_example_wangxi_ndktest_Cryptor_decrypt
     int i = 0;
     int pwd_len = strlen(password);
     int ch;
-    while (ch = fgetc(crypt_fp) != EOF) {
+    while ((ch = fgetc(crypt_fp)) != EOF) {
         fputc(ch ^ password[i % pwd_len], decrypt_fp);
         i++;
     }
